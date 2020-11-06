@@ -85,11 +85,7 @@ def cin_inv(x, y, z, orientacion):
     r = sqrt(x**2 + y**2)
     # arctan devuelve el angulo entre entre -pi/2 y pi/2
     # por lo tanto hay que corregir cuando el angulo esta entre pi/2 y -pi/2
-    epsilon = 0
-    if x >= 0:
-        epsilon = arctan(x/y)
-    else:
-        epsilon = arctan(x/y) + pi  # esta bien? radianes
+    epsilon = arctan2(y, x)
     aux1 = brazo**2 + r**2 - antebrazo**2
     aux2 = 2 * r * brazo
     fi = arccos(aux1 / aux2)      # fi siempre esta entre 0 y pi/2
