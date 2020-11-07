@@ -1,13 +1,12 @@
-# This is a sample Python script.
-
+import time
+from math import *
 from numpy import *
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 
 def main():
     test_cd()
     # test_ci()
+    test_tra()
 
 
 def test_cd():
@@ -78,30 +77,27 @@ def mat_dh(alfa, a, theta, d):
 
 
 def cin_inv(x, y, z, orientacion):
-    # orientacion se refiere al angulo que forman los ejes x0 y x4
     brazo = 105
     antebrazo = 75
-    d3 = 50 - z
+    d3 = [50 - z, 50 - z]
     r = sqrt(x**2 + y**2)
-    # arctan devuelve el angulo entre entre -pi/2 y pi/2
-    # por lo tanto hay que corregir cuando el angulo esta entre pi/2 y -pi/2
-    epsilon = arctan2(y, x)
+    epsilon = atan2(y, x)
     aux1 = brazo**2 + r**2 - antebrazo**2
     aux2 = 2 * r * brazo
-    fi = arccos(aux1 / aux2)      # fi siempre esta entre 0 y pi/2
+    fi = acos(aux1 / aux2)
     th1 = [epsilon - fi, epsilon + fi]
-    th_aux = arcsin((r * sin(fi)) / antebrazo)
+    th_aux = asin((r * sin(fi)) / antebrazo)
     th2 = [th_aux, -th_aux]
-    th4 = orientacion - th1 - th2
+    th4 = [orientacion - th1[0] - th2[0], orientacion - th1[1] - th2[1]]
     return [th1, th2, th4, d3]
 
 
 def test_ci():
     # casos de la a2
     conf_a = cin_inv(0, 0, 0, 0)
-    conf_b = cin_inv(0, math.pi/2, 0, 0)
-    conf_c = cin_inv(-math.pi/2, math.pi/2, 0, 50)
-    conf_d = cin_inv(math.pi, 0, math.pi/2, 25)
+    conf_b = cin_inv(0, 0, 0, 0)
+    conf_c = cin_inv(0, 0, 0, 0)
+    conf_d = cin_inv(0, 0, 0, 0)
     # mas casos
 
 
@@ -113,13 +109,61 @@ def jacobiana(th1, th2, th4, d3):
     return j
 
 
-def trayectoria():
-    a = 0
-    a = 0
+def trayectoria(x0, v_x, a_x, y0, v_y, a_y, z0, v_z, a_z):
+    puntos = [[x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [y0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [z0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    configuraciones = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    for t in range(1, 21):
+        puntos[0][t] = x0 + v_x * t + a_x * t**2
+        puntos[1][t] = y0 + v_y * t + a_y * t**2
+        puntos[2][t] = z0 + v_z * t + a_z * t**2
+    print(array(puntos))
+    for t in range(0, 21):
+        # calcular la orientacion del eje x: angulo formado por dx y dy
+        dx = v_x + a_x * t
+        dy = v_y + a_y * t
+        angulo = atan2(dy, dx)
+        config = cin_inv(puntos[0][t], puntos[1][t], puntos[2][t], angulo)
+        print("config")
+        print(array(config))
+        """if t == 0:
+            if puntos[1][t] > 0:
+                configuraciones[0][t] = config[0][0]
+                configuraciones[1][t] = config[1][0]
+                configuraciones[2][t] = config[2][0]
+                configuraciones[3][t] = config[3][0]
+            else:
+                configuraciones[0][t] = config[0][1]
+                configuraciones[1][t] = config[1][1]
+                configuraciones[2][t] = config[2][1]
+                configuraciones[3][t] = config[3][1]
+        elif abs(config[0][0] - configuraciones[0][t-1]) < abs(config[0][1] - configuraciones[0][t-1]):
+            configuraciones[0][t] = config[0][0]
+            configuraciones[1][t] = config[1][0]
+            configuraciones[2][t] = config[2][0]
+            configuraciones[3][t] = config[3][0]
+        else:"""
+        configuraciones[0][t] = config[0][1]
+        configuraciones[1][t] = config[1][1]
+        configuraciones[2][t] = config[2][1]
+        configuraciones[3][t] = config[3][1]
+        time.sleep(2)
+    return configuraciones
+
+
+def test_tra():
+    config = trayectoria(-75, 8, 0, 105, 0, 0, 50, 0, 0)
+    for i in range(0, 21):
+        print('theta1: {}, theta2: {}, theta4: {}, d3: {}'.format(round(config[0][i], 2), round(config[1][i], 2), round(config[2][i], 2), round(config[3][i], 2)))
+        matriz = cin_dir(config[0][i], config[1][i], config[2][i], config[3][i])
+        pos = [round(matriz[0][3], 2), round(matriz[1][3], 2), round(matriz[2][3], 2)]
+        print(array(pos))
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
