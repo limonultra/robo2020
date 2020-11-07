@@ -87,6 +87,8 @@ def cin_inv(x, y, z, orientacion):
     fi = acos(aux1 / aux2)
     th1 = [epsilon - fi, epsilon + fi]
     th_aux = asin((r * sin(fi)) / antebrazo)
+    if r < sqrt(brazo ** 2 + antebrazo ** 2):
+        th_aux = pi - th_aux
     th2 = [th_aux, -th_aux]
     th4 = [orientacion - th1[0] - th2[0], orientacion - th1[1] - th2[1]]
     return [th1, th2, th4, d3]
