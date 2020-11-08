@@ -1,13 +1,13 @@
 from math import *
 from numpy import *
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 
 def main():
-    test_cd()
+    # test_cd()
     # test_ci()
-    test_tra()
+    test_jacobiana()
+    # test_tra()
 
 
 def test_cd():
@@ -106,10 +106,48 @@ def test_ci():
 
 def jacobiana(th1, th2, th4, d3):
     j = [[-75*sin(th1 + th2) - 105*sin(th1), -75*sin(th1 + th2), 0, 0],
-         [75*cos(th1 + th2) - 105*cos(th1), 75*cos(th1 + th2), 0, 0],
+         [75*cos(th1 + th2) + 105*cos(th1), 75*cos(th1 + th2), 0, 0],
          [0, 0, -1, 0],
          [1, 1, 0, 1]]
     return j
+
+
+def test_jacobiana():
+    # casos de la a2
+    mja = jacobiana(0, -pi/2, pi/2, 25)
+    for i in range(len(mja)):
+        for j in range(len(mja[i])):
+            mja[i][j] = round(mja[i][j], 2)
+    mjb = jacobiana(pi/4, -pi/4, 0, 0)
+    for i in range(len(mja)):
+        for j in range(len(mjb[i])):
+            mjb[i][j] = round(mjb[i][j], 2)
+
+    print("a) q(0, -pi/2, pi/2, 25):")
+    print(array(mja))
+    print("b) q(pi/4, -pi/4, 0, 0):")
+    print(array(mjb))
+
+    # mas casos
+    mjp1 = jacobiana(-pi/2, pi/2, -pi/2, 0)
+    for i in range(len(mja)):
+        for j in range(len(mjp1[i])):
+            mjp1[i][j] = round(mjp1[i][j], 2)
+    mjp2 = jacobiana(pi/4, -pi/2, 0, 0)
+    for i in range(len(mja)):
+        for j in range(len(mjp2[i])):
+            mjp2[i][j] = round(mjp2[i][j], 2)
+    mjp3 = jacobiana(0, pi/2, pi/4, 30)
+    for i in range(len(mjp3)):
+        for j in range(len(mjp3[i])):
+            mjp3[i][j] = round(mjp3[i][j], 2)
+
+    print("Prueba1) q(-pi/2, pi/2, -pi/2, 0):")
+    print(array(mjp1))
+    print("Prueba2) q(pi/4, -pi/2, 0, 0):")
+    print(array(mjp2))
+    print("Prueba3) q(0, pi/2, pi/4, 30):")
+    print(array(mjp3))
 
 
 def trayectoria(x0, v_x, a_x, y0, v_y, a_y, z0, v_z, a_z):
