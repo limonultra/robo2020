@@ -1,6 +1,7 @@
-import time
 from math import *
 from numpy import *
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -153,17 +154,33 @@ def trayectoria(x0, v_x, a_x, y0, v_y, a_y, z0, v_z, a_z):
         configuraciones[1][t] = config[1][1]
         configuraciones[2][t] = config[2][1]
         configuraciones[3][t] = config[3][1]
-        time.sleep(2)
     return configuraciones
 
 
 def test_tra():
     config = trayectoria(-75, 8, 0, 105, 0, 0, 50, 0, 0)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
     for i in range(0, 21):
         print('theta1: {}, theta2: {}, theta4: {}, d3: {}'.format(round(config[0][i], 2), round(config[1][i], 2), round(config[2][i], 2), round(config[3][i], 2)))
         matriz = cin_dir(config[0][i], config[1][i], config[2][i], config[3][i])
         pos = [round(matriz[0][3], 2), round(matriz[1][3], 2), round(matriz[2][3], 2)]
         print(array(pos))
+        ax.scatter(pos[0], pos[1], pos[2], c='r', marker='o')
+
+    config = trayectoria(-75, 8, 0, 105, 10, -0.5, 0, 10, -0.5)
+    for i in range(0, 21):
+        print('theta1: {}, theta2: {}, theta4: {}, d3: {}'.format(round(config[0][i], 2), round(config[1][i], 2), round(config[2][i], 2), round(config[3][i], 2)))
+        matriz = cin_dir(config[0][i], config[1][i], config[2][i], config[3][i])
+        pos = [round(matriz[0][3], 2), round(matriz[1][3], 2), round(matriz[2][3], 2)]
+        print(array(pos))
+        ax.scatter(pos[0], pos[1], pos[2], c='b', marker='^')
+
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+
+    plt.show()
 
 
 # Press the green button in the gutter to run the script.
